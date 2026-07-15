@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family Feud — Host Control</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="host-view">
+
+  <div class="host-topbar">
+    <h1>🎪 FAMILY FEUD <span>HOST CONTROL</span></h1>
+    <div class="topbar-right">
+      <div class="status-pill" id="connStatus"><span class="status-dot"></span><span id="connText">Second screen not launched</span></div>
+      <button class="btn btn-gold" id="btnLaunch">Launch Audience Display ↗</button>
+    </div>
+  </div>
+
+  <div class="host-body">
+    <div class="host-col left">
+
+      <div class="card">
+        <h2>Question Bank <small>browse by category, click to add to the game</small></h2>
+        <div id="bankBrowser"></div>
+
+        <div class="bank-draft" style="margin-top:14px;border-top:1px dashed var(--navy-line);padding-top:12px;">
+          <div class="category-title">Add a question to the bank</div>
+          <div class="editor-field">
+            <label>Category</label>
+            <input type="text" id="draftCategory" list="draftCategoryList" placeholder="e.g. Household">
+            <datalist id="draftCategoryList"></datalist>
+          </div>
+          <div class="editor-field">
+            <label>Question</label>
+            <input type="text" id="draftQuestion" placeholder="Name something...">
+          </div>
+          <div class="editor-field">
+            <label>Answers</label>
+            <div id="draftAnswerList"></div>
+            <button class="btn btn-outline btn-sm" id="btnDraftAddAnswer" style="margin-top:6px;">+ Add answer row</button>
+          </div>
+          <button class="btn btn-gold btn-sm" id="btnDraftSave">Save to bank</button>
+        </div>
+
+        <div class="field-row" style="margin-top:12px;border-top:1px dashed var(--navy-line);padding-top:12px;">
+          <label class="btn btn-outline btn-sm file-label" for="txtImportInput">Import into bank (.txt)</label>
+          <input type="file" id="txtImportInput" accept=".txt,text/plain" style="display:none;">
+          <button class="btn btn-outline btn-sm" id="btnExportTxt">Export bank as .txt</button>
+          <button class="btn btn-outline btn-sm" id="btnDownloadExample">Download example .txt</button>
+        </div>
+        <button class="btn btn-outline btn-sm" id="btnToggleFormatHelp">Format guide ▾</button>
+        <div id="formatHelpBody" class="format-help">
+          <p>Separate each question with a blank line. Lines starting with <code>#</code> are ignored. Multiple questions can share the same category.</p>
+<pre># Family Feud question bank
+Category: Household
+Question: Name something you always forget to bring on vacation
+Phone charger - 32
+Toothbrush - 26
+Sunscreen - 19
+Medication - 12
+Swimsuit - 7
+Umbrella - 4
+
+Category: Work Life
+Question: Name a reason people give for being late to work
+Traffic - 35
+Overslept - 24</pre>
+          <p>The <code>Category:</code> / <code>Question:</code> labels are optional — if left off, the first line of a block is treated as the category and the second as the question. Answers can use <code> - </code>, <code>,</code>, or just a trailing number for points.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Rounds <small id="roundCountHint"></small></h2>
+        <div class="round-tabs" id="roundTabs"></div>
+        <div class="field-row">
+          <button class="btn btn-outline btn-sm" id="btnAddRound">+ Add blank round</button>
+          <button class="btn btn-outline btn-sm" id="btnDeleteRound">Delete this round</button>
+        </div>
+        <div class="hint">This is the live sequence for tonight's game — pick questions from the bank above, or add a blank round and write a one-off question by hand below.</div>
+      </div>
+
+      <div class="card">
+        <h2>Edit question <small>changes apply live</small></h2>
+        <div class="editor-field">
+          <label>Category</label>
+          <input type="text" id="editCategory">
+        </div>
+        <div class="editor-field">
+          <label>Question</label>
+          <input type="text" id="editQuestion">
+        </div>
+        <div class="editor-field">
+          <label>Answers (top to bottom = highest to lowest points, typically)</label>
+          <div id="answerEditList"></div>
+          <button class="btn btn-outline btn-sm" id="btnAddAnswer" style="margin-top:6px;">+ Add answer</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Settings</h2>
+        <div class="field-row">
+          <label>Strike limit</label>
+          <input type="number" id="strikeLimitInput" min="1" max="5" value="3">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="host-col mid">
+
+      <div class="card">
+        <h2>Board control <small>reveal in any order</small></h2>
+        <div id="boardControlList"></div>
+        <div class="pot-display">
+          <span>Pot this round</span>
+          <b id="potValue">0</b>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Scores</h2>
+        <div class="score-panel">
+          <div class="score-box">
+            <input type="text" class="team-name" id="team1Name" value="Team 1">
+            <div class="score-val" id="team1Score">0</div>
+            <div class="score-btns">
+              <button class="btn btn-blue btn-sm" id="btnAwardTeam1">Award pot</button>
+              <button class="btn btn-outline btn-sm" id="btnMinus1">−10</button>
+            </div>
+          </div>
+          <div class="score-box">
+            <input type="text" class="team-name" id="team2Name" value="Team 2">
+            <div class="score-val" id="team2Score">0</div>
+            <div class="score-btns">
+              <button class="btn btn-red btn-sm" id="btnAwardTeam2">Award pot</button>
+              <button class="btn btn-outline btn-sm" id="btnMinus2">−10</button>
+            </div>
+          </div>
+        </div>
+        <div class="strike-panel">
+          <span style="font-size:12px;color:var(--text-dim);">Strikes:</span>
+          <div id="strikeBoxes" style="display:flex;gap:8px;"></div>
+          <button class="btn btn-red btn-sm" id="btnAddStrike">Add strike (buzz)</button>
+          <button class="btn btn-outline btn-sm" id="btnClearStrikes">Clear strikes</button>
+        </div>
+        <div class="field-row" style="margin-top:8px;">
+          <button class="btn btn-amber btn-sm" id="btnRepeatAnswer">Repeated answer (buzz)</button>
+        </div>
+        <div class="hint">Round controls:</div>
+        <div class="field-row" style="margin-top:6px;">
+          <button class="btn btn-gold btn-sm" id="btnNextQuestion">Next question →</button>
+          <button class="btn btn-outline btn-sm" id="btnResetRound">Reset this round</button>
+          <button class="btn btn-outline btn-sm" id="btnResetGame">Reset whole game</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Timer <small>host-controlled, manual start</small></h2>
+        <div class="timer-readout" id="hostTimerReadout">0:30</div>
+        <div class="field-row">
+          <label>Duration (seconds)</label>
+          <input type="number" id="timerDurationInput" min="5" max="600" value="30">
+        </div>
+        <div class="field-row">
+          <button class="btn btn-gold btn-sm" id="btnTimerStart">Start</button>
+          <button class="btn btn-outline btn-sm" id="btnTimerPause">Pause</button>
+          <button class="btn btn-outline btn-sm" id="btnTimerReset">Reset</button>
+        </div>
+        <div class="hint">The timer badge appears on the audience display (top-right) whenever you start it. It plays a sound and flashes at zero — nothing else happens automatically, so you decide what to do next.</div>
+      </div>
+
+      <div class="card">
+        <h2>Game flow</h2>
+        <div class="field-row">
+          <button class="btn btn-gold btn-sm" id="btnStartGame">Start Game (leave intro)</button>
+          <button class="btn btn-outline btn-sm" id="btnShowIntro">Show Intro Screen</button>
+        </div>
+        <div class="hint">The audience display opens on the intro screen with a "Team A vs Team B" title card. Click "Start Game" when you're ready to move to the first question.</div>
+      </div>
+
+    </div>
+
+    <div class="host-col right">
+      <div class="card preview-card">
+        <h2>Audience Preview <small>test on this screen — updates live</small></h2>
+        <div class="preview-frame-wrap">
+          <iframe id="previewFrame" title="Audience display preview"></iframe>
+        </div>
+        <div class="field-row" style="margin-top:10px;">
+          <button class="btn btn-outline btn-sm" id="btnPreviewFullscreen">Preview fullscreen (this screen)</button>
+        </div>
+        <div class="hint">When you're ready to run the real game, click "Launch Audience Display" above — it opens a separate window you drag to your projector/TV and make fullscreen. This preview pane always mirrors it live, so you can test everything right here first.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="importModal">
+  <div class="modal-box">
+    <h3>Import into bank</h3>
+    <p id="importSummary"></p>
+    <div class="import-errors" id="importErrors"></div>
+    <div class="modal-actions">
+      <button class="btn btn-gold btn-sm" id="btnImportReplace">Replace bank</button>
+      <button class="btn btn-outline btn-sm" id="btnImportAdd">Add to bank</button>
+      <button class="btn btn-outline btn-sm" id="btnImportCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

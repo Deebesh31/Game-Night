@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hangman — Host Control</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="host-view">
+
+  <div class="host-topbar">
+    <h1>🎪 HANGMAN <span>HOST CONTROL</span></h1>
+    <div class="topbar-right">
+      <div class="status-pill" id="connStatus"><span class="status-dot"></span><span id="connText">Second screen not launched</span></div>
+      <button class="btn btn-gold" id="btnLaunch">Launch Audience Display ↗</button>
+    </div>
+  </div>
+
+  <div class="host-body">
+    <div class="host-col left">
+
+      <div class="card">
+        <h2>Settings <button class="btn btn-outline btn-sm" id="btnToggleSettings">Edit</button></h2>
+        <div id="settingsPanel">
+          <div class="field-row">
+            <label>Max wrong guesses</label>
+            <input type="number" id="maxWrongInput" min="1" max="12" value="6">
+          </div>
+          <div class="field-row">
+            <label>Show category to audience</label>
+            <label class="toggle"><input type="checkbox" id="showHintInput" checked><span class="slider"></span></label>
+          </div>
+          <div class="cat-manager">
+            <div class="category-title">Manage word list</div>
+            <div class="cat-row">
+              <input type="text" id="newCategoryName" placeholder="New category name">
+              <button class="btn btn-outline btn-sm" id="btnAddCategory">Add category</button>
+            </div>
+            <div class="cat-row">
+              <select id="phraseCategorySelect"></select>
+              <input type="text" id="newPhraseText" placeholder="New phrase">
+              <button class="btn btn-outline btn-sm" id="btnAddPhrase">Add</button>
+            </div>
+            <div class="mini-list" id="catManageList"></div>
+            <div class="field-row" style="margin-top:12px;border-top:1px dashed var(--navy-line);padding-top:12px;">
+              <label class="btn btn-outline btn-sm file-label" for="txtImportInput">Import word list (.txt)</label>
+              <input type="file" id="txtImportInput" accept=".txt,text/plain" style="display:none;">
+              <button class="btn btn-outline btn-sm" id="btnExportTxt">Export current as .txt</button>
+              <button class="btn btn-outline btn-sm" id="btnDownloadExample">Download example .txt</button>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btnToggleFormatHelp">Format guide ▾</button>
+            <div id="formatHelpBody" class="format-help">
+              <p>Separate each category with a blank line. Lines starting with <code>#</code> are ignored.</p>
+<pre># Hangman word list
+Category: Movies
+The Godfather
+Jurassic Park
+Star Wars
+
+Category: Animals
+Elephant
+Giraffe</pre>
+              <p>The <code>Category:</code> label is optional — if left off, the first line of a block is treated as the category name. Words/phrases are converted to uppercase automatically.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Timer <small>host-controlled, manual start</small></h2>
+        <div class="timer-readout" id="hostTimerReadout">0:30</div>
+        <div class="field-row">
+          <label>Duration (seconds)</label>
+          <input type="number" id="timerDurationInput" min="5" max="600" value="30">
+        </div>
+        <div class="field-row">
+          <button class="btn btn-gold btn-sm" id="btnTimerStart">Start</button>
+          <button class="btn btn-outline btn-sm" id="btnTimerPause">Pause</button>
+          <button class="btn btn-outline btn-sm" id="btnTimerReset">Reset</button>
+        </div>
+        <div class="hint">The timer badge appears on the audience display (top-right). It plays a sound and flashes at zero — nothing else happens automatically.</div>
+      </div>
+
+      <div class="card">
+        <h2>Pick a phrase <small>host only — audience can't see this</small></h2>
+        <div id="categoryBrowser"></div>
+        <div class="custom-row">
+          <input type="text" id="customPhraseInput" placeholder="Or type a custom phrase...">
+          <button class="btn btn-outline" id="btnUseCustom">Use custom</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="host-col mid">
+
+      <div class="card">
+        <h2>Current selection</h2>
+        <div class="selection-box">
+          <div class="label">Category</div>
+          <div class="cat" id="selCategory">— none selected —</div>
+          <div class="label" style="margin-top:8px;">Phrase (host view only)</div>
+          <div class="phrase" id="selPhrase">— none selected —</div>
+        </div>
+        <div class="round-controls">
+          <button class="btn btn-gold" id="btnStartRound" disabled>Start Round</button>
+          <button class="btn btn-outline" id="btnResetRound">Reset Round</button>
+          <button class="btn btn-amber" id="btnRevealOnly">Reveal Word</button>
+          <button class="btn btn-red" id="btnRevealEnd">End Round</button>
+        </div>
+        <div class="hint">"Reveal Word" immediately shows the "YOU GOT IT!" win screen with the phrase. "End Round" evaluates the actual guesses and shows a win or loss screen accordingly.</div>
+        <div class="round-banner" id="roundBanner">Round idle — pick a phrase to begin</div>
+      </div>
+
+      <div class="card">
+        <h2>Guess a letter <small>click tiles or type on your keyboard</small></h2>
+        <div class="kb-grid" id="kbGrid"></div>
+        <div class="status-line">
+          <div class="stat"><b id="statCorrect">0</b><span>Correct</span></div>
+          <div class="stat"><b id="statWrong">0</b><span>Wrong</span></div>
+          <div class="stat"><b id="statRemaining">6</b><span>Attempts left</span></div>
+        </div>
+        <div class="hint">Wrong guesses so far: <span id="wrongList">none</span></div>
+      </div>
+
+    </div>
+
+    <div class="host-col right">
+      <div class="card preview-card">
+        <h2>Audience Preview <small>test on this screen — updates live</small></h2>
+        <div class="preview-frame-wrap">
+          <iframe id="previewFrame" title="Audience display preview"></iframe>
+        </div>
+        <div class="field-row" style="margin-top:10px;">
+          <button class="btn btn-outline btn-sm" id="btnPreviewFullscreen">Preview fullscreen (this screen)</button>
+        </div>
+        <div class="hint">When you're ready to run the real game, click "Launch Audience Display" above — it opens a separate window you drag to your projector/TV and make fullscreen. This preview pane always mirrors it live, so you can test everything right here first.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="importModal">
+  <div class="modal-box">
+    <h3>Import word list</h3>
+    <p id="importSummary"></p>
+    <div class="import-errors" id="importErrors"></div>
+    <div class="modal-actions">
+      <button class="btn btn-gold btn-sm" id="btnImportReplace">Replace all categories</button>
+      <button class="btn btn-outline btn-sm" id="btnImportAdd">Add after existing</button>
+      <button class="btn btn-outline btn-sm" id="btnImportCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

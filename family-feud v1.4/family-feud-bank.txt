@@ -1,0 +1,61 @@
+Category: Household
+Question: Name something you always forget to bring on vacation
+Phone charger - 32
+Toothbrush - 26
+Sunscreen - 19
+Medication - 12
+Swimsuit - 7
+Umbrella - 4
+
+Category: Household
+Question: Name an appliance every kitchen needs
+Refrigerator - 30
+Microwave - 24
+Toaster - 18
+Stove/oven - 14
+Coffee maker - 9
+Blender - 5
+
+Category: Work Life
+Question: Name a reason people give for being late to work
+Traffic - 35
+Overslept - 24
+Car trouble - 16
+Kids / family emergency - 12
+Lost track of time - 8
+Weather - 5
+
+Category: Work Life
+Question: Name something people do to procrastinate at work
+Scroll on phone - 33
+Chat with coworkers - 25
+Get coffee/snacks - 18
+Check email repeatedly - 12
+Daydream - 8
+Online shopping - 4
+
+Category: Food
+Question: Name a topping people put on pizza that starts an argument
+Pineapple - 41
+Anchovies - 22
+Extra cheese - 15
+Mushrooms - 11
+Pickles - 6
+Ketchup - 5
+
+Category: Food
+Question: Name a food that's better as leftovers
+Pizza - 30
+Chili - 24
+Curry - 18
+Lasagna - 14
+Fried rice - 9
+Spaghetti - 5
+
+Category: Entertainment and Media
+Question: Name a famous movie that has way too many sequels
+Fast and Furious - 10
+Marvel / MCU - 8
+Star Wars - 6
+Jurassic Park - 4
+Transforners - 2
